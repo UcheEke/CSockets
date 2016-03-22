@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
+#include <unistd.h>
 
 int main(){
 
@@ -21,11 +23,12 @@ int main(){
   server_address.sin_port = htons(9002);
   server_address.sin_addr.s_addr = INADDR_ANY;
 
+  printf("Server listening for connections on port 9002...\n");
+
   // bind the socket to our specified IP and port
   bind(server_sock, (struct sockaddr *) &server_address, sizeof(server_address));
 
   // Listen on the server
-  printf("Server listening for connections on port 9002...");
   listen(server_sock, 5); // The number is the largest number of active connections the server can handle
 
   // Accept a client connection

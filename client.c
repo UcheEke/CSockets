@@ -11,6 +11,8 @@
 
 // Structures for address information storage
 #include <netinet/in.h>
+// Required header file for the function close()
+#include <unistd.h>
 
 int main() {
   // Create the socket, using an integer reference
