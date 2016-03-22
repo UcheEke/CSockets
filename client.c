@@ -33,7 +33,7 @@ int main() {
 
   // Now we connect to the server. Note we have to cast the server_addr as a different struct, sockaddr_in
   int connection_status;
-  connection_status = connect(client_socket, (struct sockaddr *) &server_addr, sizeof(server_addr))
+  connection_status = connect(client_socket, (struct sockaddr *) &server_addr, sizeof(server_addr));
   // connect() returns an integer. Errors are signified by a value of -1
   if (connection_status == -1){
     printf("There was an error connecting to the remote server at %d\n\n ", INADDR_ANY);
@@ -49,6 +49,6 @@ int main() {
 
   // Close the socket connection
   close(client_socket);
-   
+
   return 0;
 }
