@@ -14,11 +14,26 @@
 // Required header file for the function close()
 #include <unistd.h>
 
-int main() {
+void error(char *msg){
+ perror(msg);
+ exit(1);
+}
+
+int main(int argc, char *argv[]) {
+  // Get the user defined port number
+  int port_no;
+  if (argc < 2){
+    // Set default port to 8001
+    printf("Connecting to localhost:8001 by default...\n");
+    port_no = 8001;
+  } else {
+    port_no = atoi(argv[1]);
+  }
+
   // Create the socket, using an integer reference
   int client_socket;
   // socket() with constants:
-  // AF_INET: (A)ddress (F)amily - IPv4 Addresses (AF_INET6 for IP v6)
+  // AF_INET: (A)ddress (F)amily - IPv4 Addresses (AF_INET6 for IPv6)
   // SOCK_STREAM: using a sequenced, reliable two-way connection based byte stream
   // last parameter = 0 (indicates protocol type is default i.e. TCP)
   client_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -29,21 +44,20 @@ int main() {
   // sockaddr_in have several parameters to specify for a TCP connection
   server_addr.sin_family = AF_INET;  // Explained earlier
   // The htons() function converts the port number (an integer - uint short) from host byte order to network byte order.
-  server_addr.sin_port = htons(9002);
+  server_addr.sin_port = htons(port_no);
   // the remote server address is part of a substruct in the sockaddr_in struct
-  server_addr.sin_addr.s_addr = INADDR_ANY; // INADDR_ANY = "localhost"
+  server_addr.sin_addr.s_addr = INADDR_ANY; // INADDR_ANY == "localhost", "0.0.0.0"
 
   // Now we connect to the server. Note we have to cast the server_addr as a different struct, sockaddr_in
   int connection_status;
   connection_status = connect(client_socket, (struct sockaddr *) &server_addr, sizeof(server_addr));
   // connect() returns an integer. Errors are signified by a value of -1
   if (connection_status == -1){
-    printf("There was an error connecting to the remote server at %d\n\n ", INADDR_ANY);
-    exit(connection_status);
+    error("There was an error connecting to the remote server");
   }
 
   // receive data from server with the recv function
-  char server_response[256];
+  char server_response[2048];
   recv(client_socket, &server_response, sizeof(server_response), 0);
 
   // print out the data received from the remote server
